@@ -1,0 +1,31 @@
+{
+  "name": "product-overview-service",
+  "version": "1.0.0",
+  "description": "The service intended to handle all traffic for Product Overview",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "server-dev": "npx nodemon server/index.js",
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdc-by-sdc/product-overview-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sdc-by-sdc/product-overview-service/issues"
+  },
+  "homepage": "https://github.com/sdc-by-sdc/product-overview-service#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-hackreactor": "github:hackreactor-labs/eslint-config-hackreactor",
+    "jest": "^27.2.5"
+  }
+}
