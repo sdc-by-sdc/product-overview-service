@@ -11,7 +11,7 @@ const { uploadProducts, uploadStyles, uploadFeatures, uploadSKUs, uploadPhotos, 
 mongoose.connect(`mongodb://${DATABASE_URL}`);
 const db = mongoose.connection;
 db.on('error', function() {
-  console.log('ERROR connecting to database');
+  console.log('ERROR connecting to database', error);
 });
 db.once('open', function() {
   console.log('SUCCESS database has been connected to');
@@ -21,7 +21,7 @@ db.once('open', function() {
 // CURRENTLY SET TO TEST FILES NOT THE REAL ONES
 //uploadProducts();
 //uploadStyles();
-//uploadFeatures();
+uploadFeatures();
 //uploadSKUs();
 //uploadPhotos();
 //uploadRelated();
