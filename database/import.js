@@ -199,29 +199,33 @@ const uploadSKUs = function() {
 // id styleId url thumbnail_url
 const uploadPhotos = function() {
   let photoStream = fs.createReadStream(photosPath);
+  console.log('I AM WORKING');
+  console.log(photosPath);
+  console.log(relatedPath);
   let convertPhotos = csv
     .parse()
     .on('data', (data) => {
       // format style for document
-      if (data[1] !== 'styleId') {
-        convertPhotos.pause();
-        let subDoc = {
-          url: data[2],
-          thumbnailURL: data[3]
-        };
-        // update document for matching product with id
-        const styleID = Number(data[1]);
-        Style.findOne({styleID: styleID})
-          .then((document) => {
-            document.photos.push(subDoc);
-            document.save();
-            console.log('SUCCESS saved photo', Number(data[0]), 'to style', styleID);
-            convertPhotos.resume();
-          })
-          .catch((error) => {
-            console.log('ERROR saving photo to ', styleID, '/b', error);
-          });
-      }
+      // if (data[0] !== 'id') {
+      //   // pause the parser
+      //   convertPhotos.pause();
+      //   let subDoc = {
+      //     url: data[2],
+      //     thumbnailURL: data[3]
+      //   };
+      //   // update document for matching style with id
+      //   const styleID = Number(data[1]);
+      //   Style.findOne({styleID: styleID})
+      //     .then((document) => {
+      //       document.photos.push(subDoc);
+      //       document.save();
+      //       console.log('SUCCESS saved photo', Number(data[0]), 'to style', styleID);
+      //       convertPhotos.resume();
+      //     })
+      //     .catch((error) => {
+      //       console.log('ERROR saving photo to ', styleID, '/b', error);
+      //     });
+      // }
     })
     .on('error', () => {
       console.log('ERROR reading row in photos.csv');
@@ -241,7 +245,7 @@ const uploadRelated = function() {
     .parse()
     .on('data', (data) => {
       // format style for document
-      if (data[1] !== 'current_product_id') {
+      if (data[0] !== 'id') {
         convertRelated.pause();
         let subDoc = {
           relatedID: Number(data[2])
@@ -252,6 +256,7 @@ const uploadRelated = function() {
           .then((document) => {
             document.related.push(subDoc);
             document.save();
+            console.log('SUCCESS saved related id', Number(data[0]), 'to product', productID);
             convertRelated.resume();
           })
           .catch((error) => {
@@ -271,3 +276,7 @@ const uploadRelated = function() {
 
 
 module.exports = { uploadProducts, uploadStyles, uploadFeatures, uploadSKUs, uploadPhotos, uploadRelated };
+
+
+
+// db.products.updateMany({ }, { $set: { related: [] } })

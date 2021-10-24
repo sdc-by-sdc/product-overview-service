@@ -21,9 +21,9 @@ db.once('open', function() {
 // CURRENTLY SET TO TEST FILES NOT THE REAL ONES
 //uploadProducts();
 //uploadStyles();
-uploadFeatures();
+//uploadFeatures();
 //uploadSKUs();
-//uploadPhotos();
+uploadPhotos();
 //uploadRelated();
 
 
