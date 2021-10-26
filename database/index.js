@@ -64,34 +64,57 @@ const getProductStyles = function(productID, callback) {
   Product.findOne({id: productID})
     .then((product) => {
       const stylesList = product.styles;
-      stylesList.forEach((style) => {
-        Style.findOne({styleID: style.styleID})
-          .then(styleDoc => {
-            let formatted = {
-              'style_id': styleDoc.styleID,
-              name: styleDoc.name,
-              'original_price': styleDoc.originalPrice,
-              'sale_price': styleDoc.salePrice,
-              'default?': styleDoc.default,
-              photos: []
-            };
-            console.log('PHOTO', styleDoc);
-            styleDoc.photos.forEach(photo => {
-              formatted.photos.push({
-                'thumbnail_url': photo.thumbnailURL,
-                url: photo.url
+      let stylesPromises = [];
+      const formatStyle = function(ID) {
+        return new Promise((resolve, reject) => {
+          Style.findOne({styleID: ID})
+            .then(styleDoc => {
+              let formatted = {
+                'style_id': styleDoc.styleID,
+                name: styleDoc.name,
+                'original_price': styleDoc.originalPrice,
+                'sale_price': styleDoc.salePrice,
+                'default?': styleDoc.default,
+                photos: [],
+                skus: []
+              };
+              //console.log('PHOTO', styleDoc);
+              styleDoc.photos.forEach(photo => {
+                formatted.photos.push({
+                  'thumbnail_url': photo.thumbnailURL,
+                  url: photo.url
+                });
               });
+              styleDoc.skus.forEach(sku => {
+                formatted.skus.push({
+                  sku: sku.sku,
+                  quantity: sku.quantity,
+                  size: sku.size
+                });
+              });
+              resolve(formatted);
+            })
+            .catch(error => {
+              reject(error);
             });
-            finalResult.results.push(formatted);
-          })
-          .catch(error => {
-            console.log('ERROR fetching style', error);
-          });
+        });
+      };
+      stylesList.forEach((style) => {
+        let formatted = formatStyle(style.styleID);
+        //console.log('FORMATTED', formatted);
+        stylesPromises.push(formatted);
       });
-      return finalResult;
-    })
-    .then(result => {
-      callback(null, result);
+      Promise.all(stylesPromises)
+        .then(results => {
+          results.forEach(style => {
+            finalResult.results.push(style);
+          });
+          //console.log('results', finalResult);
+          return finalResult;
+        })
+        .then(result => {
+          callback(null, result);
+        });
     })
     .catch((error) => {
       callback(error, null);

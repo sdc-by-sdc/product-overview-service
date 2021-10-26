@@ -65,7 +65,8 @@ app.get('/products/:product_id/styles', (req, res) => {
       console.log('ERROR getting product styles', err);
       res.sendStatus(404);
     } else {
-      console.log('DATA', data);
+      //console.log('ENTIRE RESPONSE', data);
+      //console.log('FIRST STYLE', data.results[0]);
       res.status(200);
       res.send(data);
     }
