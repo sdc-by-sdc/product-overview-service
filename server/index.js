@@ -10,7 +10,7 @@ const { uploadProducts, uploadStyles, uploadFeatures, uploadSKUs, uploadPhotos, 
 // connect to database with a little error handling
 mongoose.connect(`mongodb://${DATABASE_URL}`);
 const db = mongoose.connection;
-db.on('error', function() {
+db.on('error', function(error) {
   console.log('ERROR connecting to database', error);
 });
 db.once('open', function() {
@@ -18,14 +18,15 @@ db.once('open', function() {
 });
 
 
-// CURRENTLY SET TO TEST FILES NOT THE REAL ONES
-//uploadProducts();
-//uploadStyles();
-//uploadFeatures();
-//uploadSKUs();
-uploadPhotos();
-//uploadRelated();
+// IMPORTING CSV FILES; UN COMMENT ONE AT A TIME IN ORDER
+// AND RUN THE SERVER UNTIL FINISHED; APPROX TIMES LISTED
 
+// uploadProducts();        // 5 minutes
+//uploadStyles();           // 1 hour
+//uploadFeatures();         // 1 hour
+//uploadSKUs();             // 3 hours
+//uploadPhotos();           // 2 hours
+//uploadRelated();          // 1.5 hours
 
 
 // proof the server is running

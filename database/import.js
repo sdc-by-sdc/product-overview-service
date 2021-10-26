@@ -199,36 +199,44 @@ const uploadSKUs = function() {
 // id styleId url thumbnail_url
 const uploadPhotos = function() {
   let photoStream = fs.createReadStream(photosPath);
-  console.log('I AM WORKING');
+  console.log('I AM STARTING');
   console.log(photosPath);
   console.log(relatedPath);
   let convertPhotos = csv
-    .parse()
+    // there was some kind of craziness with the parsing of strings for the URLs so I'm manually handling the quotes later
+    .parse({ quote: null })
     .on('data', (data) => {
-      // format style for document
-      // if (data[0] !== 'id') {
-      //   // pause the parser
-      //   convertPhotos.pause();
-      //   let subDoc = {
-      //     url: data[2],
-      //     thumbnailURL: data[3]
-      //   };
-      //   // update document for matching style with id
-      //   const styleID = Number(data[1]);
-      //   Style.findOne({styleID: styleID})
-      //     .then((document) => {
-      //       document.photos.push(subDoc);
-      //       document.save();
-      //       console.log('SUCCESS saved photo', Number(data[0]), 'to style', styleID);
-      //       convertPhotos.resume();
-      //     })
-      //     .catch((error) => {
-      //       console.log('ERROR saving photo to ', styleID, '/b', error);
-      //     });
-      // }
+      console.log('I AM WORKING');
+      //format style for document
+      if (data[0] !== 'id') {
+        // pause the parser
+        convertPhotos.pause();
+        // I'm manually handling the quotes here
+        let url = data[2].slice(1);
+        url = url.slice(0, url.length - 1);
+        let thumbnailURL = data[3].slice(1);
+        thumbnailURL = thumbnailURL.slice(0, thumbnailURL.length - 1);
+        let subDoc = {
+          url,
+          thumbnailURL
+        };
+        // update document for matching style with id
+        const styleID = Number(data[1]);
+        Style.findOne({styleID: styleID})
+          .then((document) => {
+            //console.log('FORMATTED', subDoc);
+            document.photos.push(subDoc);
+            document.save();
+            console.log('SUCCESS saved photo', Number(data[0]), 'to style', styleID);
+            convertPhotos.resume();
+          })
+          .catch((error) => {
+            console.log('ERROR saving photo to ', styleID, '/b', error);
+          });
+      }
     })
-    .on('error', () => {
-      console.log('ERROR reading row in photos.csv');
+    .on('error', (error) => {
+      console.log('ERROR reading row in photos.csv', error);
     })
     .on('end', () => {
       // no new documents need creating
