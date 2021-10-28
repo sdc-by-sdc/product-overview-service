@@ -18,9 +18,12 @@ const relatedPath = process.env.RELATED;
 
 // upload products
 // id name slogan description category default_price
-const uploadProducts = function() {
+const uploadProducts = function(path) {
+  if (path === undefined) {
+    path = productsPath;
+  }
   console.time('Upload Products');
-  let productStream = fs.createReadStream(productsPath);
+  let productStream = fs.createReadStream(path);
   let convertProducts = csv
     .parse()
     .on('data', (data) => {
@@ -61,9 +64,12 @@ const uploadProducts = function() {
 
 // upload styles
 // id productId name sale_price original_price default_style
-const uploadStyles = function() {
+const uploadStyles = function(path) {
+  if (path === undefined) {
+    path = stylesPath;
+  }
   console.time('Upload Styles');
-  let stylesStream = fs.createReadStream(stylesPath);
+  let stylesStream = fs.createReadStream(path);
   let convertStyles = csv
     .parse()
     .on('data', (data) => {
@@ -122,9 +128,12 @@ const uploadStyles = function() {
 
 // upload features
 // id product_id feature value
-const uploadFeatures = function() {
+const uploadFeatures = function(path) {
+  if (path === undefined) {
+    path = featuresPath;
+  }
   console.time('Upload Features');
-  let featuresStream = fs.createReadStream(featuresPath);
+  let featuresStream = fs.createReadStream(path);
   let convertFeatures = csv
     .parse()
     .on('data', (data) => {
@@ -164,9 +173,12 @@ const uploadFeatures = function() {
 
 // upload skus
 // id styleId size quantity
-const uploadSKUs = function() {
+const uploadSKUs = function(path) {
+  if (path === undefined) {
+    path = skusPath;
+  }
   console.time('Upload SKUs');
-  let skusStream = fs.createReadStream(skusPath);
+  let skusStream = fs.createReadStream(path);
   let convertSKUs = csv
     .parse()
     .on('data', (data) => {
@@ -205,12 +217,12 @@ const uploadSKUs = function() {
 
 // upload photos
 // id styleId url thumbnail_url
-const uploadPhotos = function() {
+const uploadPhotos = function(path) {
+  if (path === undefined) {
+    path = photosPath;
+  }
   console.time('Upload Photos');
-  let photoStream = fs.createReadStream(photosPath);
-  console.log('I AM STARTING');
-  console.log(photosPath);
-  console.log(relatedPath);
+  let photoStream = fs.createReadStream(path);
   let convertPhotos = csv
     // there was some kind of craziness with the parsing of strings for the URLs so I'm manually handling the quotes later
     .parse({ quote: null })
@@ -257,9 +269,12 @@ const uploadPhotos = function() {
 
 // upload related
 // id current_product_id related_product_id
-const uploadRelated = function() {
+const uploadRelated = function(path) {
+  if (path === undefined) {
+    path = relatedPath;
+  }
   console.time('Upload Related');
-  let relatedStream = fs.createReadStream(relatedPath);
+  let relatedStream = fs.createReadStream(path);
   let convertRelated = csv
     .parse()
     .on('data', (data) => {

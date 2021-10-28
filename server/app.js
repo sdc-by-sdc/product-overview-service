@@ -3,20 +3,10 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT;
 const URL_BASE = process.env.URL_BASE;
-const DATABASE_URL = process.env.DATABASE_URL;
-const mongoose = require('mongoose');
 const { uploadProducts, uploadStyles, uploadFeatures, uploadSKUs, uploadPhotos, uploadRelated } = require('../database/import.js');
 const { getProductsList, getProductInfo, getProductStyles, getProductRelated } = require('../database/index.js');
 
-// connect to database with a little error handling
-mongoose.connect(`mongodb://${DATABASE_URL}`);
-const db = mongoose.connection;
-db.on('error', function(error) {
-  console.log('ERROR connecting to database', error);
-});
-db.once('open', function() {
-  console.log('SUCCESS database has been connected to');
-});
+
 
 // API ROUTES
 
@@ -25,6 +15,7 @@ app.get('/products', (req, res) => {
   // parse out specific page or count request
   const page = req.query.page || 1;
   const count = req.query.count || 5;
+  //console.log('PAGE', page, 'COUNT', count);
   // invoke function to interact with database with a callback
   getProductsList(page, count, (err, data) => {
     if (err) {
