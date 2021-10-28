@@ -19,6 +19,7 @@ const relatedPath = process.env.RELATED;
 // upload products
 // id name slogan description category default_price
 const uploadProducts = function() {
+  console.time('Upload Products');
   let productStream = fs.createReadStream(productsPath);
   let convertProducts = csv
     .parse()
@@ -53,6 +54,7 @@ const uploadProducts = function() {
     })
     .on('end', () => {
       console.log('SUCCESS all products succesfully inserted into database');
+      console.timeEnd('Upload Products');
     });
   productStream.pipe(convertProducts);
 };
@@ -60,6 +62,7 @@ const uploadProducts = function() {
 // upload styles
 // id productId name sale_price original_price default_style
 const uploadStyles = function() {
+  console.time('Upload Styles');
   let stylesStream = fs.createReadStream(stylesPath);
   let convertStyles = csv
     .parse()
@@ -112,6 +115,7 @@ const uploadStyles = function() {
     })
     .on('end', () => {
       console.log('SUCCESS all styles succesfully inserted into database');
+      console.timeEnd('Upload Styles');
     });
   stylesStream.pipe(convertStyles);
 };
@@ -119,6 +123,7 @@ const uploadStyles = function() {
 // upload features
 // id product_id feature value
 const uploadFeatures = function() {
+  console.time('Upload Features');
   let featuresStream = fs.createReadStream(featuresPath);
   let convertFeatures = csv
     .parse()
@@ -152,6 +157,7 @@ const uploadFeatures = function() {
     .on('end', () => {
       // no new documents need creating
       console.log('SUCCESS all features succesfully inserted into database');
+      console.timeEnd('Upload Features');
     });
   featuresStream.pipe(convertFeatures);
 };
@@ -159,6 +165,7 @@ const uploadFeatures = function() {
 // upload skus
 // id styleId size quantity
 const uploadSKUs = function() {
+  console.time('Upload SKUs');
   let skusStream = fs.createReadStream(skusPath);
   let convertSKUs = csv
     .parse()
@@ -191,6 +198,7 @@ const uploadSKUs = function() {
     .on('end', () => {
       // no new documents need creating
       console.log('SUCCESS all skus succesfully inserted into database');
+      console.timeEnd('Upload SKUs');
     });
   skusStream.pipe(convertSKUs);
 };
@@ -198,6 +206,7 @@ const uploadSKUs = function() {
 // upload photos
 // id styleId url thumbnail_url
 const uploadPhotos = function() {
+  console.time('Upload Photos');
   let photoStream = fs.createReadStream(photosPath);
   console.log('I AM STARTING');
   console.log(photosPath);
@@ -241,6 +250,7 @@ const uploadPhotos = function() {
     .on('end', () => {
       // no new documents need creating
       console.log('SUCCESS all photos succesfully inserted into database');
+      console.timeEnd('Upload Photos');
     });
   photoStream.pipe(convertPhotos);
 };
@@ -248,6 +258,7 @@ const uploadPhotos = function() {
 // upload related
 // id current_product_id related_product_id
 const uploadRelated = function() {
+  console.time('Upload Related');
   let relatedStream = fs.createReadStream(relatedPath);
   let convertRelated = csv
     .parse()
@@ -278,6 +289,7 @@ const uploadRelated = function() {
     .on('end', () => {
       // no new documents need creating
       console.log('SUCCESS all related succesfully inserted into database');
+      console.timeEnd('Upload Related');
     });
   relatedStream.pipe(convertRelated);
 };
