@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const Product = require('./productSchema');
-const Style = require('./styleSchema');
+const Product = require('./productAgg');
+const Style = require('./styleAgg');
 
 // get products list
 const getProductsList = function(page, count, callback) {
@@ -75,11 +75,15 @@ const getProductStyles = function(productID, callback) {
                 'style_id': styleDoc.styleID,
                 name: styleDoc.name,
                 'original_price': styleDoc.originalPrice,
-                'sale_price': styleDoc.salePrice,
                 'default?': styleDoc.default,
                 photos: [],
                 skus: []
               };
+              if (styleDoc.salePrice === 'null') {
+                formatted['sale_price'] = '0';
+              } else {
+                formatted['sale_price'] = styleDoc.salePrice;
+              }
               //console.log('PHOTO', styleDoc);
               styleDoc.photos.forEach(photo => {
                 formatted.photos.push({

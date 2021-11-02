@@ -31,6 +31,7 @@ app.get('/products', (req, res) => {
 
 // GET /products/:product_id
 app.get('/products/:product_id', (req, res) => {
+  console.log('IS CALLED');
   // parse out product_id from URL
   const productID = req.params['product_id'];
   // invoke function to interact with database with a callback
@@ -81,6 +82,9 @@ app.get('/products/:product_id/related', (req, res) => {
   });
 });
 
+
+const test = require('../database/pipeline.js');
+test();
 
 // IMPORTING CSV FILES; UN COMMENT ONE AT A TIME IN ORDER
 // AND RUN THE SERVER UNTIL FINISHED; APPROX TIMES LISTED
