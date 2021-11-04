@@ -27,7 +27,7 @@ const infoSchema = new Schema({
 
 // schema for style documents
 const extraSchema = new Schema({
-  style_id: {
+  id: {
     type: Number,
     unique: true
   },

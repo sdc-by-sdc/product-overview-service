@@ -42,7 +42,8 @@ const extra = mongoose.model('extra', extraSchema);
 const info = mongoose.model('info', infoSchema);
 
 const test = async () => {
-  // let phase1 = await product.aggregate([
+  console.log('STARTING PIPELINE');
+  // const phase1 = await product.aggregate([
   //   {
   //     $lookup: {
   //       from: 'features',
@@ -52,18 +53,12 @@ const test = async () => {
   //     }
   //   },
   //   {
-  //     $unset: ['features.id']
-  //   },
-  //   {
   //     $lookup: {
   //       from: 'related',
   //       localField: 'id',
   //       foreignField: 'current_product_id',
   //       as: 'related'
   //     }
-  //   },
-  //   {
-  //     $unset: ['related.id']
   //   },
   //   {
   //     $out: {
@@ -79,17 +74,96 @@ const test = async () => {
   //   console.log('ERROR IN PHASE ONE\n', err)
   // });
 
-  const phase2 = await info.aggregate([
-    {
-      $unset: ['related["current_product_id"]']
-    },
-  ], {allowDiskUse: true})
-  .then(() => {
-    console.log('DONE WITH PHASE TWO')
-  })
-  .catch((err) => {
-    console.log('ERROR IN PHASE TWO\n', err)
-  });
+  // const phase2 = await info.aggregate([
+  //   {
+  //     $project: {
+  //       "id": 1,
+  //       "name": 1,
+  //       "slogan": 1,
+  //       "description": 1,
+  //       "category": 1,
+  //       "default_price": 1,
+  //       "features.feature": 1,
+  //       "features.value": 1,
+  //       "related.related_product_id": 1
+  //     }
+  //   },
+  //   {
+  //     $merge: {
+  //       "into": {"db": "ProductOverviewImport", "coll": "info"},
+  //       "on": "id",
+  //       "whenMatched": "replace"
+  //     }
+  //   }
+  // ])
+  // .then(() => {
+  //   console.log('DONE WITH PHASE TWO')
+  // })
+  // .catch((err) => {
+  //   console.log('ERROR IN PHASE TWO\n', err)
+  // });
+
+  // const phase3 = await styles.aggregate([
+  // {
+  //   $lookup: {
+  //     from: 'skus',
+  //     localField: 'id',
+  //     foreignField: 'styleId',
+  //     as: 'skus'
+  //   }
+  // },
+  // {
+  //   $lookup: {
+  //     from: 'photos',
+  //     localField: 'id',
+  //     foreignField: 'styleId',
+  //     as: 'photos'
+  //   }
+  // },
+  // {
+  //   $out: {
+  //     db: 'ProductOverviewImport',
+  //     coll: 'extra'
+  //   }
+  // }
+  // ])
+  // .then(() => {
+  //   console.log('DONE WITH PHASE THREE')
+  // })
+  // .catch((err) => {
+  //   console.log('ERROR IN PHASE THREE\n', err)
+  // });
+
+  // const phase4 = await extra.aggregate([
+  //   {
+  //     $project: {
+  //       "id": 1,
+  //       "product_id": 1,
+  //       "name": 1,
+  //       "original_price": 1,
+  //       "sale_price": 1,
+  //       "default_style": 1,
+  //       "skus.id": 1,
+  //       "skus.size": 1,
+  //       "skus.quantity": 1,
+  //       "photos.url": 1,
+  //       "photos.thumbnail_url": 1
+  //     }
+  //   },
+  //   {
+  //     $merge: {
+  //       "into": {"db": "ProductOverviewImport", "coll": "extra"},
+  //       "on": "id",
+  //       "whenMatched": "replace"
+  //     }
+  //   }
+  // ])
+  // .then(() => {
+  //   console.log('DONE WITH PHASE FOUR')
+  // })
+  // .catch((err) => {
+  //   console.log('ERROR IN PHASE FOUR\n', err)
+  // });
 };
 
 module.exports = test;
