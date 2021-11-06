@@ -49,7 +49,7 @@ const skusSchema = new Schema({
   },
   size: String,
   quantity: Number
-}, {collection: 'skus'});
+}, {collection: 'skus', _id: false});
 
 const photosSchema = new Schema({
   id: {

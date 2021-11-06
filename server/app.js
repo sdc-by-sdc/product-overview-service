@@ -83,7 +83,7 @@ app.get('/products/:product_id/related', (req, res) => {
 });
 
 // NEW AND IMPROVED ETL PROCESS
-// const test = require('../database/pipeline.js');
+// const { test } = require('../database/pipeline.js');
 // test();
 
 // IMPORTING CSV FILES; UN COMMENT ONE AT A TIME IN ORDER

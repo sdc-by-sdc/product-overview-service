@@ -138,7 +138,7 @@ const test = async () => {
   //   {
   //     $project: {
   //       "id": 1,
-  //       "product_id": 1,
+  //       "productId": 1,
   //       "name": 1,
   //       "original_price": 1,
   //       "sale_price": 1,
@@ -149,6 +149,9 @@ const test = async () => {
   //       "photos.url": 1,
   //       "photos.thumbnail_url": 1
   //     }
+  //   },
+  //   {
+  //     $unset: 'skus._id'
   //   },
   //   {
   //     $merge: {
@@ -166,4 +169,4 @@ const test = async () => {
   // });
 };
 
-module.exports = test;
+module.exports = { test, extra, info };

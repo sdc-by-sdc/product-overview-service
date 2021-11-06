@@ -1,9 +1,17 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Product = require('./productAgg');
-const Style = require('./styleAgg');
+// const Product = require('./productAgg');
+// const Style = require('./styleAgg');
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const { extra, info } = require('./pipeline.js');
+const MODE = process.env.MODE;
+
+
+let DATABASE_URL = process.env.DATABASE_URL;
+if (MODE === 'TEST') {
+  DATABASE_URL = process.env.TEST_DATABASE_URL;
+}
+
 
 // connect to database with a little error handling
 mongoose.connect(`mongodb://${DATABASE_URL}`);
@@ -19,7 +27,7 @@ db.once('open', function() {
 const getProductsList = function(page, count, callback) {
   const skip = (page - 1) * count;
   //console.log('PAGE', page, 'COUNT', count, 'SKIP', skip);
-  Product.find({}, 'id name slogan description category defaultPrice', { limit: count, skip: skip })
+  info.find({}, 'id name slogan description category defaultPrice', { limit: count, skip: skip })
     .then((results) => {
       let formatted = [];
       results.forEach((product) => {
@@ -44,7 +52,7 @@ const getProductsList = function(page, count, callback) {
 
 // get product info
 const getProductInfo = function(productID, callback) {
-  Product.findOne({id: productID})
+  info.findOne({id: productID})
     .then((product) => {
       let formatted = {
         id: product.id,
@@ -76,74 +84,42 @@ const getProductStyles = function(productID, callback) {
     'product_id': productID,
     results: []
   };
-  Product.findOne({id: productID})
-    .then((product) => {
-      const stylesList = product.styles;
-      let stylesPromises = [];
-      const formatStyle = function(ID) {
-        return new Promise((resolve, reject) => {
-          Style.findOne({styleID: ID})
-            .then(styleDoc => {
-              let formatted = {
-                'style_id': styleDoc.styleID,
-                name: styleDoc.name,
-                'original_price': styleDoc.originalPrice,
-                'default?': styleDoc.default,
-                photos: [],
-                skus: []
-              };
-              if (styleDoc.salePrice === 'null') {
-                formatted['sale_price'] = '0';
-              } else {
-                formatted['sale_price'] = styleDoc.salePrice;
-              }
-              //console.log('PHOTO', styleDoc);
-              styleDoc.photos.forEach(photo => {
-                formatted.photos.push({
-                  'thumbnail_url': photo.thumbnailURL,
-                  url: photo.url
-                });
-              });
-              styleDoc.skus.forEach(sku => {
-                formatted.skus.push({
-                  sku: sku.sku,
-                  quantity: sku.quantity,
-                  size: sku.size
-                });
-              });
-              resolve(formatted);
-            })
-            .catch(error => {
-              reject(error);
-            });
-        });
-      };
-      stylesList.forEach((style) => {
-        let formatted = formatStyle(style.styleID);
-        //console.log('FORMATTED', formatted);
-        stylesPromises.push(formatted);
-      });
-      Promise.all(stylesPromises)
-        .then(results => {
-          results.forEach(style => {
-            finalResult.results.push(style);
-          });
-          //console.log('results', finalResult);
-          return finalResult;
+  extra.find({'productId': productID})
+    .then(results => {
+      results.forEach(result => {
+        let data = {
+          "style_id": result.id,
+          "name": result.name,
+          "original_price": result['original_price'],
+          "sale_price": result["sale_price"],
+          'default?': Boolean(result['default_style']),
+          'photos': result.photos,
+          'skus': {}
+        }
+        if (result['sale_price'] === 'null') {
+          data['sale_price'] = '0';
+        }
+        result.skus.forEach(sku => {
+          let skuData = {
+            quantity: sku.quantity,
+            size: sku.size
+          }
+          data.skus[sku.id] = skuData;
         })
-        .then(result => {
-          callback(null, result);
-        });
+        //console.log('FORMATTED STYLE', data);
+        finalResult.results.push(data);
+      })
+      callback(null, finalResult);
     })
-    .catch((error) => {
+    .catch(error => {
       callback(error, null);
-    });
+    })
 };
 
 // get product related
 const getProductRelated = function(productID, callback) {
   let relatedIDs = [];
-  Product.findOne({id: productID})
+  info.findOne({id: productID})
     .then((product) => {
       product.related.forEach((id) => {
         relatedIDs.push(id.relatedID);

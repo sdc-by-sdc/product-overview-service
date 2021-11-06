@@ -31,7 +31,7 @@ const extraSchema = new Schema({
     type: Number,
     unique: true
   },
-  product_id: {
+  productId: {
     type: Number,
     index: true
   },
@@ -47,11 +47,11 @@ const extraSchema = new Schema({
   ],
   skus: [
     {
-      sku: Number,
+      id: Number,
       quantity: Number,
       size: String
     }
   ]
-}, {collection: 'extra'});
+}, {collection: 'extra', _id: false});
 
 module.exports = { infoSchema, extraSchema };
