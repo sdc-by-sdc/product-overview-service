@@ -3,10 +3,15 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT;
 const URL_BASE = process.env.URL_BASE;
-const DATABASE_URL = process.env.DATABASE_URL;
+const MODE = process.env.MODE;
 const mongoose = require('mongoose');
 const { uploadProducts, uploadStyles, uploadFeatures, uploadSKUs, uploadPhotos, uploadRelated } = require('../database/import.js');
 const { getProductsList, getProductInfo, getProductStyles, getProductRelated } = require('../database/index.js');
+console.log('MODE', MODE);
+const DATABASE_URL = process.env.DATABASE_URL;
+if (MODE === 'TEST') {
+  const DATABASE_URL = process.env.TEST_DATABASE_URL;
+}
 
 // connect to database with a little error handling
 mongoose.connect(`mongodb://${DATABASE_URL}`);
@@ -15,7 +20,7 @@ db.on('error', function(error) {
   console.log('ERROR connecting to database', error);
 });
 db.once('open', function() {
-  console.log('SUCCESS database has been connected to');
+  console.log(`SUCCESS ${MODE} database has been connected to`);
 });
 
 // API ROUTES
@@ -31,7 +36,7 @@ app.get('/products', (req, res) => {
       console.log('ERROR getting products list', err);
       res.sendStatus(404);
     } else {
-      console.log('DATA', data);
+      //console.log('DATA', data);
       res.status(200);
       res.send(data);
     }
@@ -48,7 +53,7 @@ app.get('/products/:product_id', (req, res) => {
       console.log('ERROR getting product info', err);
       res.sendStatus(404);
     } else {
-      console.log('DATA', data);
+      //console.log('DATA', data);
       res.status(200);
       res.send(data);
     }
@@ -83,7 +88,7 @@ app.get('/products/:product_id/related', (req, res) => {
       console.log('ERROR getting related products', err);
       res.sendStatus(404);
     } else {
-      console.log('DATA', data);
+    //console.log('DATA', data);
       res.status(200);
       res.send(data);
     }
@@ -105,4 +110,5 @@ app.get('/products/:product_id/related', (req, res) => {
 // proof the server is running
 app.listen(PORT, () => {
   console.log(`Product Overview Service is listening at ${URL_BASE} on port ${PORT}`);
+  console.log(process.env.MODE);
 });
