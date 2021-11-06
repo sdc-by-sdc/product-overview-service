@@ -18,8 +18,12 @@ const relatedPath = process.env.RELATED;
 
 // upload products
 // id name slogan description category default_price
-const uploadProducts = function() {
-  let productStream = fs.createReadStream(productsPath);
+const uploadProducts = function(path) {
+  if (path === undefined) {
+    path = productsPath;
+  }
+  console.time('Upload Products');
+  let productStream = fs.createReadStream(path);
   let convertProducts = csv
     .parse()
     .on('data', (data) => {
@@ -53,14 +57,19 @@ const uploadProducts = function() {
     })
     .on('end', () => {
       console.log('SUCCESS all products succesfully inserted into database');
+      console.timeEnd('Upload Products');
     });
   productStream.pipe(convertProducts);
 };
 
 // upload styles
 // id productId name sale_price original_price default_style
-const uploadStyles = function() {
-  let stylesStream = fs.createReadStream(stylesPath);
+const uploadStyles = function(path) {
+  if (path === undefined) {
+    path = stylesPath;
+  }
+  console.time('Upload Styles');
+  let stylesStream = fs.createReadStream(path);
   let convertStyles = csv
     .parse()
     .on('data', (data) => {
@@ -112,14 +121,19 @@ const uploadStyles = function() {
     })
     .on('end', () => {
       console.log('SUCCESS all styles succesfully inserted into database');
+      console.timeEnd('Upload Styles');
     });
   stylesStream.pipe(convertStyles);
 };
 
 // upload features
 // id product_id feature value
-const uploadFeatures = function() {
-  let featuresStream = fs.createReadStream(featuresPath);
+const uploadFeatures = function(path) {
+  if (path === undefined) {
+    path = featuresPath;
+  }
+  console.time('Upload Features');
+  let featuresStream = fs.createReadStream(path);
   let convertFeatures = csv
     .parse()
     .on('data', (data) => {
@@ -152,14 +166,19 @@ const uploadFeatures = function() {
     .on('end', () => {
       // no new documents need creating
       console.log('SUCCESS all features succesfully inserted into database');
+      console.timeEnd('Upload Features');
     });
   featuresStream.pipe(convertFeatures);
 };
 
 // upload skus
 // id styleId size quantity
-const uploadSKUs = function() {
-  let skusStream = fs.createReadStream(skusPath);
+const uploadSKUs = function(path) {
+  if (path === undefined) {
+    path = skusPath;
+  }
+  console.time('Upload SKUs');
+  let skusStream = fs.createReadStream(path);
   let convertSKUs = csv
     .parse()
     .on('data', (data) => {
@@ -191,17 +210,19 @@ const uploadSKUs = function() {
     .on('end', () => {
       // no new documents need creating
       console.log('SUCCESS all skus succesfully inserted into database');
+      console.timeEnd('Upload SKUs');
     });
   skusStream.pipe(convertSKUs);
 };
 
 // upload photos
 // id styleId url thumbnail_url
-const uploadPhotos = function() {
-  let photoStream = fs.createReadStream(photosPath);
-  console.log('I AM STARTING');
-  console.log(photosPath);
-  console.log(relatedPath);
+const uploadPhotos = function(path) {
+  if (path === undefined) {
+    path = photosPath;
+  }
+  console.time('Upload Photos');
+  let photoStream = fs.createReadStream(path);
   let convertPhotos = csv
     // there was some kind of craziness with the parsing of strings for the URLs so I'm manually handling the quotes later
     .parse({ quote: null })
@@ -241,14 +262,19 @@ const uploadPhotos = function() {
     .on('end', () => {
       // no new documents need creating
       console.log('SUCCESS all photos succesfully inserted into database');
+      console.timeEnd('Upload Photos');
     });
   photoStream.pipe(convertPhotos);
 };
 
 // upload related
 // id current_product_id related_product_id
-const uploadRelated = function() {
-  let relatedStream = fs.createReadStream(relatedPath);
+const uploadRelated = function(path) {
+  if (path === undefined) {
+    path = relatedPath;
+  }
+  console.time('Upload Related');
+  let relatedStream = fs.createReadStream(path);
   let convertRelated = csv
     .parse()
     .on('data', (data) => {
@@ -278,6 +304,7 @@ const uploadRelated = function() {
     .on('end', () => {
       // no new documents need creating
       console.log('SUCCESS all related succesfully inserted into database');
+      console.timeEnd('Upload Related');
     });
   relatedStream.pipe(convertRelated);
 };

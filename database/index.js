@@ -5,6 +5,7 @@ const Style = require('./styleSchema');
 // get products list
 const getProductsList = function(page, count, callback) {
   const skip = (page - 1) * count;
+  //console.log('PAGE', page, 'COUNT', count, 'SKIP', skip);
   Product.find({}, 'id name slogan description category defaultPrice', { limit: count, skip: skip })
     .then((results) => {
       let formatted = [];
@@ -19,7 +20,8 @@ const getProductsList = function(page, count, callback) {
         };
         formatted.push(format);
       });
-      //console.log('DATABASE FORMATED', formatted);
+      formatted = formatted.slice(0, count);
+      //console.log('DATABASE FORMATED', formatted.length);
       callback(null, formatted);
     })
     .catch((error) => {
@@ -58,7 +60,7 @@ const getProductInfo = function(productID, callback) {
 // get product styles
 const getProductStyles = function(productID, callback) {
   let finalResult = {
-    'product_id': JSON.stringify(productID),
+    'product_id': productID,
     results: []
   };
   Product.findOne({id: productID})

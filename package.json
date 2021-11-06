@@ -10,6 +10,11 @@
     "start": "env MODE=DEPLOY node server/index.js",
     "smoketest": "env MODE=TEST k6 run stressTesting/smokeTest.js"
   },
+  "jest": {
+    "coveragePathIgnorePatterns" : [
+      "database/import.js"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sdc-by-sdc/product-overview-service.git"
@@ -30,6 +35,6 @@
     "eslint": "^7.32.0",
     "eslint-config-hackreactor": "github:hackreactor-labs/eslint-config-hackreactor",
     "jest": "^27.2.5",
-    "k6": "^0.0.0"
+    "supertest": "^6.1.6"
   }
 }
