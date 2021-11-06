@@ -7,7 +7,8 @@
     "test": "env MODE=TEST jest",
     "coverage": "env MODE=TEST jest --coverage",
     "server-dev": "env MODE=DEPLOY npx nodemon server/index.js",
-    "start": "env MODE=DEPLOY node server/index.js"
+    "start": "env MODE=DEPLOY node server/index.js",
+    "smoketest": "env MODE=TEST k6 run stressTesting/smokeTest.js"
   },
   "jest": {
     "coveragePathIgnorePatterns" : [
