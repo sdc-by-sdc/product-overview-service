@@ -7,6 +7,11 @@ const styleSchema = new Schema({
     type: Number,
     unique: true
   },
+  productID: {
+    type: Number,
+    index: true,
+    unique: false
+  },
   name: String,
   originalPrice: String,
   salePrice: String,
@@ -27,6 +32,6 @@ const styleSchema = new Schema({
 });
 
 // turn it into a model
-//const Style = mongoose.model('Style', styleSchema);
+const Style = mongoose.model('Style', styleSchema);
 
-//module.exports = Style;
+module.exports = Style;

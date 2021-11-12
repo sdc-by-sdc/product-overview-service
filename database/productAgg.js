@@ -22,15 +22,10 @@ const productSchema = new Schema({
     {
       relatedID: Number
     }
-  ],
-  styles: [
-    {
-      styleID: Number
-    }
   ]
 });
 
 // turn it into a model
-//const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
 
-//module.exports = Product;
+module.exports = Product;
