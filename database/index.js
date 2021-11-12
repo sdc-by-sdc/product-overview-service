@@ -1,6 +1,30 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
-const Product = require('./productSchema');
-const Style = require('./styleSchema');
+const Product = require('./product.js');
+const Style = require('./style.js');
+const MODE = process.env.MODE;
+
+
+let DATABASE_URL = process.env.DATABASE_URL;
+if (MODE === 'TEST') {
+  DATABASE_URL = process.env.TEST_DATABASE_URL;
+}
+
+
+// connect to database with a little error handling
+mongoose.connect(`mongodb://${DATABASE_URL}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  user: process.env.DATABASE_USERNAME,
+  pass: process.env.DATABASE_PASSWORD,
+});
+const db = mongoose.connection;
+db.on('error', function(error) {
+  console.log('ERROR connecting to database', error);
+});
+db.once('open', function() {
+  console.log('SUCCESS database has been connected to');
+});
 
 // get products list
 const getProductsList = function(page, count, callback) {
@@ -63,64 +87,36 @@ const getProductStyles = function(productID, callback) {
     'product_id': productID,
     results: []
   };
-  Product.findOne({id: productID})
-    .then((product) => {
-      const stylesList = product.styles;
-      let stylesPromises = [];
-      const formatStyle = function(ID) {
-        return new Promise((resolve, reject) => {
-          Style.findOne({styleID: ID})
-            .then(styleDoc => {
-              let formatted = {
-                'style_id': styleDoc.styleID,
-                name: styleDoc.name,
-                'original_price': styleDoc.originalPrice,
-                'sale_price': styleDoc.salePrice,
-                'default?': styleDoc.default,
-                photos: [],
-                skus: []
-              };
-              //console.log('PHOTO', styleDoc);
-              styleDoc.photos.forEach(photo => {
-                formatted.photos.push({
-                  'thumbnail_url': photo.thumbnailURL,
-                  url: photo.url
-                });
-              });
-              styleDoc.skus.forEach(sku => {
-                formatted.skus.push({
-                  sku: sku.sku,
-                  quantity: sku.quantity,
-                  size: sku.size
-                });
-              });
-              resolve(formatted);
-            })
-            .catch(error => {
-              reject(error);
-            });
-        });
-      };
-      stylesList.forEach((style) => {
-        let formatted = formatStyle(style.styleID);
-        //console.log('FORMATTED', formatted);
-        stylesPromises.push(formatted);
-      });
-      Promise.all(stylesPromises)
-        .then(results => {
-          results.forEach(style => {
-            finalResult.results.push(style);
-          });
-          //console.log('results', finalResult);
-          return finalResult;
+  Style.find({'productId': productID})
+    .then(results => {
+      results.forEach(result => {
+        let data = {
+          "style_id": result.id,
+          "name": result.name,
+          "original_price": result['original_price'],
+          "sale_price": result["sale_price"],
+          'default?': Boolean(result['default_style']),
+          'photos': result.photos,
+          'skus': {}
+        }
+        if (result['sale_price'] === 'null') {
+          data['sale_price'] = '0';
+        }
+        result.skus.forEach(sku => {
+          let skuData = {
+            quantity: sku.quantity,
+            size: sku.size
+          }
+          data.skus[sku.id] = skuData;
         })
-        .then(result => {
-          callback(null, result);
-        });
+        //console.log('FORMATTED STYLE', data);
+        finalResult.results.push(data);
+      })
+      callback(null, finalResult);
     })
-    .catch((error) => {
+    .catch(error => {
       callback(error, null);
-    });
+    })
 };
 
 // get product related

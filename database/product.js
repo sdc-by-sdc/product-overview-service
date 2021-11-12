@@ -11,7 +11,7 @@ const productSchema = new Schema({
   slogan: String,
   description: String,
   category: String,
-  defaultPrice: String,
+  default_price: String,
   features: [
     {
       feature: String,
@@ -20,12 +20,7 @@ const productSchema = new Schema({
   ],
   related: [
     {
-      relatedID: Number
-    }
-  ],
-  styles: [
-    {
-      styleID: Number
+      related_id: Number
     }
   ]
 });

@@ -12,7 +12,12 @@ if (MODE === 'TEST') {
 }
 
 // connect to database with a little error handling
-mongoose.connect(`mongodb://${DATABASE_URL}`);
+mongoose.connect(`mongodb://${DATABASE_URL}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  user: process.env.DATABASE_USERNAME,
+  pass: process.env.DATABASE_PASSWORD,
+});
 const db = mongoose.connection;
 db.on('error', function(error) {
   console.log('ERROR connecting to database', error);

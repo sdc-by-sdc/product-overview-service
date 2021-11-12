@@ -3,14 +3,18 @@ const { Schema } = mongoose;
 
 // schema for style documents
 const styleSchema = new Schema({
-  styleID: {
+  id: {
     type: Number,
     unique: true
   },
+  productId: {
+    type: Number,
+    index: true
+  },
   name: String,
-  originalPrice: String,
-  salePrice: String,
-  default: Boolean,
+  original_price: String,
+  sale_price: String,
+  'default?': Boolean,
   photos: [
     {
       url: String,
@@ -19,7 +23,7 @@ const styleSchema = new Schema({
   ],
   skus: [
     {
-      sku: Number,
+      id: Number,
       quantity: Number,
       size: String
     }
