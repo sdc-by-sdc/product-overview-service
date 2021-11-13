@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 // schema for product documents
-const productSchema = new Schema({
+const infoSchema = new Schema({
   id: {
     type: Number,
     unique: true
@@ -23,9 +23,10 @@ const productSchema = new Schema({
       related_id: Number
     }
   ]
-});
+}, {collection: 'info'});
+
 
 // turn it into a model
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model('info', infoSchema, 'info');
 
 module.exports = Product;

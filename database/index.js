@@ -2,29 +2,6 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Product = require('./product.js');
 const Style = require('./style.js');
-const MODE = process.env.MODE;
-
-
-let DATABASE_URL = process.env.DATABASE_URL;
-if (MODE === 'TEST') {
-  DATABASE_URL = process.env.TEST_DATABASE_URL;
-}
-
-
-// connect to database with a little error handling
-mongoose.connect(`mongodb://${DATABASE_URL}`, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  user: process.env.DATABASE_USERNAME,
-  pass: process.env.DATABASE_PASSWORD,
-});
-const db = mongoose.connection;
-db.on('error', function(error) {
-  console.log('ERROR connecting to database', error);
-});
-db.once('open', function() {
-  console.log('SUCCESS database has been connected to');
-});
 
 // get products list
 const getProductsList = function(page, count, callback) {

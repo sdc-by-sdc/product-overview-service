@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 // schema for style documents
-const styleSchema = new Schema({
+const extraSchema = new Schema({
   id: {
     type: Number,
     unique: true
@@ -28,9 +28,9 @@ const styleSchema = new Schema({
       size: String
     }
   ]
-});
+}, {collection: 'extra'});
 
 // turn it into a model
-const Style = mongoose.model('Style', styleSchema);
+const Style = mongoose.model('extra', extraSchema);
 
 module.exports = Style;

@@ -21,7 +21,7 @@ app.get('/products', (req, res) => {
       console.log('ERROR getting products list', err);
       res.sendStatus(404);
     } else {
-      //console.log('DATA', data);
+      console.log('DATA', data);
       res.status(200);
       res.send(data);
     }
