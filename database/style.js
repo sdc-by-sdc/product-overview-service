@@ -1,30 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// schema for product documents
-const infoSchema = new Schema({
-  id: {
-    type: Number,
-    unique: true
-  },
-  name: String,
-  slogan: String,
-  description: String,
-  category: String,
-  default_price: String,
-  features: [
-    {
-      feature: String,
-      value: String
-    }
-  ],
-  related: [
-    {
-      related_id: Number
-    }
-  ]
-}, {collection: 'info'});
-
 // schema for style documents
 const extraSchema = new Schema({
   id: {
@@ -52,6 +28,9 @@ const extraSchema = new Schema({
       size: String
     }
   ]
-}, {collection: 'extra', _id: false});
+}, {collection: 'extra'});
 
-module.exports = { infoSchema, extraSchema };
+// turn it into a model
+const Style = mongoose.model('extra', extraSchema, 'extra');
+
+module.exports = Style;

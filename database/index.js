@@ -1,33 +1,13 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-// const Product = require('./productAgg');
-// const Style = require('./styleAgg');
-
-const { extra, info } = require('./pipeline.js');
-const MODE = process.env.MODE;
-
-
-let DATABASE_URL = process.env.DATABASE_URL;
-if (MODE === 'TEST') {
-  DATABASE_URL = process.env.TEST_DATABASE_URL;
-}
-
-
-// connect to database with a little error handling
-mongoose.connect(`mongodb://${DATABASE_URL}`);
-const db = mongoose.connection;
-db.on('error', function(error) {
-  console.log('ERROR connecting to database', error);
-});
-db.once('open', function() {
-  console.log('SUCCESS database has been connected to');
-});
+const Product = require('./product.js');
+const Style = require('./style.js');
 
 // get products list
 const getProductsList = function(page, count, callback) {
   const skip = (page - 1) * count;
   //console.log('PAGE', page, 'COUNT', count, 'SKIP', skip);
-  info.find({}, 'id name slogan description category defaultPrice', { limit: count, skip: skip })
+  Product.find({}, 'id name slogan description category default_price', { limit: count, skip: skip })
     .then((results) => {
       let formatted = [];
       results.forEach((product) => {
@@ -37,7 +17,7 @@ const getProductsList = function(page, count, callback) {
           slogan: product.slogan,
           description: product.description,
           category: product.category,
-          'default_price': product.defaultPrice
+          'default_price': product['default_price']
         };
         formatted.push(format);
       });
@@ -60,7 +40,7 @@ const getProductInfo = function(productID, callback) {
         slogan: product.slogan,
         description: product.description,
         category: product.category,
-        'default_price': product.defaultPrice,
+        'default_price': product['default_price'],
         features: []
       };
       product.features.forEach((entry) => {
@@ -84,7 +64,7 @@ const getProductStyles = function(productID, callback) {
     'product_id': productID,
     results: []
   };
-  extra.find({'productId': productID})
+  Style.find({'productId': productID})
     .then(results => {
       results.forEach(result => {
         let data = {
@@ -122,7 +102,7 @@ const getProductRelated = function(productID, callback) {
   info.findOne({id: productID})
     .then((product) => {
       product.related.forEach((id) => {
-        relatedIDs.push(id.relatedID);
+        relatedIDs.push(id['related_product_id']);
       });
       //console.log('DATABASE FORMATED', formatted);
       callback(null, relatedIDs);
