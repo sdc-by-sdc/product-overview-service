@@ -7,7 +7,7 @@ const Style = require('./style.js');
 const getProductsList = function(page, count, callback) {
   const skip = (page - 1) * count;
   //console.log('PAGE', page, 'COUNT', count, 'SKIP', skip);
-  Product.find({}, 'id name slogan description category defaultPrice', { limit: count, skip: skip })
+  Product.find({}, 'id name slogan description category default_price', { limit: count, skip: skip })
     .then((results) => {
       let formatted = [];
       results.forEach((product) => {
@@ -17,7 +17,7 @@ const getProductsList = function(page, count, callback) {
           slogan: product.slogan,
           description: product.description,
           category: product.category,
-          'default_price': product.defaultPrice
+          'default_price': product['default_price']
         };
         formatted.push(format);
       });
@@ -40,7 +40,7 @@ const getProductInfo = function(productID, callback) {
         slogan: product.slogan,
         description: product.description,
         category: product.category,
-        'default_price': product.defaultPrice,
+        'default_price': product['default_price'],
         features: []
       };
       product.features.forEach((entry) => {
@@ -102,7 +102,7 @@ const getProductRelated = function(productID, callback) {
   Product.findOne({id: productID})
     .then((product) => {
       product.related.forEach((id) => {
-        relatedIDs.push(id.relatedID);
+        relatedIDs.push(id['related_product_id']);
       });
       //console.log('DATABASE FORMATED', formatted);
       callback(null, relatedIDs);

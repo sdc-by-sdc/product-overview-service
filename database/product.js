@@ -20,7 +20,7 @@ const infoSchema = new Schema({
   ],
   related: [
     {
-      related_id: Number
+      related_product_id: Number
     }
   ]
 }, {collection: 'info'});
