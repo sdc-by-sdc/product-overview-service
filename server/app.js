@@ -81,6 +81,9 @@ app.get('/products/:product_id/related', (req, res) => {
   });
 });
 
+// NEW AND IMPROVED ETL PROCESS
+// const { test } = require('../database/pipeline.js');
+// test();
 
 
 module.exports = app;

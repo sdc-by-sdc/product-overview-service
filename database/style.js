@@ -31,6 +31,6 @@ const extraSchema = new Schema({
 }, {collection: 'extra'});
 
 // turn it into a model
-const Style = mongoose.model('extra', extraSchema);
+const Style = mongoose.model('extra', extraSchema, 'extra');
 
 module.exports = Style;

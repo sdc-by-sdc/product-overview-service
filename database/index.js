@@ -32,7 +32,7 @@ const getProductsList = function(page, count, callback) {
 
 // get product info
 const getProductInfo = function(productID, callback) {
-  Product.findOne({id: productID})
+  info.findOne({id: productID})
     .then((product) => {
       let formatted = {
         id: product.id,
@@ -99,7 +99,7 @@ const getProductStyles = function(productID, callback) {
 // get product related
 const getProductRelated = function(productID, callback) {
   let relatedIDs = [];
-  Product.findOne({id: productID})
+  info.findOne({id: productID})
     .then((product) => {
       product.related.forEach((id) => {
         relatedIDs.push(id['related_product_id']);
