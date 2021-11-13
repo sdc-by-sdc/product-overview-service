@@ -10,22 +10,18 @@ const MODE = process.env.MODE;
 if (MODE === 'TEST') {
   DATABASE_URL = process.env.TEST_DATABASE_URL;
 }
-// // connect to database with a little error handling
-// mongoose.connect(`mongodb://${DATABASE_URL}`, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-// const db = mongoose.connection;
-// db.on('error', function(error) {
-//   console.log('ERROR connecting to database', error);
-// });
-// db.once('open', function() {
-//   mongoose.connection.useDb('ProductOverview');
-//   mongoose.connection.db.listCollections().toArray(function (err, names) {
-//     console.log('NAMES', names);
-//   });
-//   console.log(`SUCCESS ${MODE} database has been connected to`);
-// });
+// connect to database with a little error handling
+mongoose.connect(`mongodb://${DATABASE_URL}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+const db = mongoose.connection;
+db.on('error', function(error) {
+  console.log('ERROR connecting to database', error);
+});
+db.once('open', function() {
+  console.log(`SUCCESS ${MODE} database has been connected to`);
+});
 
 // proof the server is running
 app.listen(PORT, () => {
